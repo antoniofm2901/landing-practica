@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - MiMarca</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+      <nav class="navbar">
+            <h2 class="logo">MiMarca</h2>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="#">Servicios</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+        </nav>
+
+    <!-- LOGIN -->
+    <section class="login">
+        <div class="login-container">
+            <h2>Iniciar Sesión</h2>
+
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Correo electrónico" required>
+                <input type="password" id="loginPassword" placeholder="Contraseña" required>
+
+                <button type="submit" class="btn-primary">Ingresar</button>
+
+                <p id="loginMessage" class="message"></p>
+            </form>
+        </div>
+    </section>
+
+    <script src="../js/login.js"></script>
+</body>
+</html>
