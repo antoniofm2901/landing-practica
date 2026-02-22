@@ -1,0 +1,78 @@
+/* HERO SERVICIOS - más compacto que el de index */
+.servicios-hero {
+    min-height: 50vh;
+    background: linear-gradient(to right, #4e73df, #1cc88a);
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.servicios-hero-content h1 {
+    font-size: 2.5rem;
+}
+
+.servicios-hero-content p {
+    font-size: 1.1rem;
+}
+
+/* SECCIÓN DE SERVICIOS */
+.servicios-section {
+    padding: 80px 10%;
+    text-align: center;
+}
+
+.servicios-section h2 {
+    margin-bottom: 50px;
+    font-size: 2rem;
+    color: #333;
+}
+
+/* GRID DE SERVICIOS */
+.servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.servicio-card {
+    background: #f8f9fc;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.servicio-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(78, 115, 223, 0.15);
+}
+
+.servicio-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.servicio-card h3 {
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+    color: #4e73df;
+}
+
+.servicio-card p {
+    color: #666;
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .servicios-hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .servicios-section {
+        padding: 60px 5%;
+    }
+}
