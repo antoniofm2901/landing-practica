@@ -124,3 +124,10 @@ body {
     font-size: 0.85rem;
     font-weight: 600;
 }
+
+footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
