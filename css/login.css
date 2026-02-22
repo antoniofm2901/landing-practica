@@ -6,8 +6,7 @@ body {
     background: linear-gradient(to right, #4e73df, #1cc88a);
 }
 
-/*  NAVBAR  */
-
+/* NAVBAR */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -17,8 +16,6 @@ body {
 
 .logo {
     color: white;
-    font-weight: bold;
-    font-size: 1.2rem;
 }
 
 .nav-links {
@@ -30,13 +27,9 @@ body {
 .nav-links a {
     text-decoration: none;
     color: white;
-    font-weight: 500;
-    transition: opacity 0.3s ease;
+    font-weight: bold;
 }
 
-.nav-links a:hover {
-    opacity: 0.8;
-}
 
 /*  LOGIN SECTION */
 
