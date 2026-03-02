@@ -54,10 +54,256 @@
         <a href="#" class="btn-secondary">Únete ahora</a>
     </section>
 
+    <!-- REVIEWS -->
+    <section id="reviews" class="reviews-section">
+        <h2>Opiniones de nuestros clientes</h2>
+
+        <div class="reviews-summary">
+            <span id="average-rating">0.0</span> / 5
+            <span id="reviews-count">(0 reseñas)</span>
+        </div>
+
+        <div id="reviews-list" class="reviews-list">
+            <!-- Reseñas generadas por JavaScript -->
+        </div>
+
+        <form id="review-form" class="review-form">
+            <h3>Deja tu reseña</h3>
+
+            <div id="star-rating" class="star-rating" aria-label="Calificación de 0 a 5 estrellas">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+                <button type="button" id="clear-rating" class="clear-rating">Sin estrellas (0)</button>
+            </div>
+
+            <textarea
+                id="review-comment"
+                class="review-textarea"
+                rows="4"
+                placeholder="Escribe tu reseña (mínimo 10 caracteres)"
+                required
+            ></textarea>
+
+            <input
+                id="review-name"
+                class="review-input"
+                type="text"
+                placeholder="Tu nombre (opcional)"
+            />
+
+            <button type="submit" class="review-submit">Enviar reseña</button>
+
+            <p id="review-error" class="review-error" aria-live="polite"></p>
+        </form>
+    </section>
+
     <!-- FOOTER -->
     <footer>
         <p>© 2026 MiMarca. Todos los derechos reservados.</p>
     </footer>
 
+    <script>
+        (function () {
+            const starEls = document.querySelectorAll("#star-rating .star");
+            const clearBtn = document.getElementById("clear-rating");
+            const form = document.getElementById("review-form");
+            const commentInput = document.getElementById("review-comment");
+            const nameInput = document.getElementById("review-name");
+            const errorEl = document.getElementById("review-error");
+            const reviewsListEl = document.getElementById("reviews-list");
+            const avgRatingEl = document.getElementById("average-rating");
+            const reviewsCountEl = document.getElementById("reviews-count");
+
+            let currentRating = 0;
+            let reviews = [];
+
+            function saveToLocalStorage() {
+                try {
+                    localStorage.setItem("reviews", JSON.stringify(reviews));
+                } catch (e) {
+                    console.warn("No se pudo guardar en localStorage", e);
+                }
+            }
+
+            function loadFromLocalStorage() {
+                try {
+                    const stored = localStorage.getItem("reviews");
+                    if (stored) {
+                        reviews = JSON.parse(stored);
+                    }
+                } catch (e) {
+                    console.warn("No se pudo leer de localStorage", e);
+                }
+            }
+
+            function formatDate(date) {
+                return date.toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "short",
+                    day: "2-digit",
+                });
+            }
+
+            function updateStarUI() {
+                starEls.forEach((star) => {
+                    const value = Number(star.dataset.value);
+                    star.classList.toggle("active", value <= currentRating);
+                });
+            }
+
+            function handleStarClick(e) {
+                const value = Number(e.target.dataset.value);
+                currentRating = value;
+                updateStarUI();
+                errorEl.textContent = "";
+            }
+
+            function handleStarMouseEnter(e) {
+                const value = Number(e.target.dataset.value);
+                starEls.forEach((star) => {
+                    const starValue = Number(star.dataset.value);
+                    star.classList.toggle("hover", starValue <= value);
+                });
+            }
+
+            function handleStarMouseLeave() {
+                starEls.forEach((star) => star.classList.remove("hover"));
+            }
+
+            function clearRating() {
+                currentRating = 0;
+                updateStarUI();
+                errorEl.textContent = "";
+            }
+
+            function renderSummary() {
+                if (reviews.length === 0) {
+                    avgRatingEl.textContent = "0.0";
+                    reviewsCountEl.textContent = "(0 reseñas)";
+                    return;
+                }
+
+                const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+                const avg = sum / reviews.length;
+                avgRatingEl.textContent = avg.toFixed(1);
+                reviewsCountEl.textContent = `(${reviews.length} reseña${reviews.length !== 1 ? "s" : ""})`;
+            }
+
+            function renderReviews() {
+                reviewsListEl.innerHTML = "";
+
+                if (reviews.length === 0) {
+                    const empty = document.createElement("p");
+                    empty.textContent = "Todavía no hay reseñas. ¡Sé el primero en opinar!";
+                    reviewsListEl.appendChild(empty);
+                    return;
+                }
+
+                const sorted = [...reviews].reverse();
+
+                sorted.forEach((review) => {
+                    const item = document.createElement("article");
+                    item.className = "review-item";
+
+                    const header = document.createElement("div");
+                    header.className = "review-header";
+
+                    const nameEl = document.createElement("span");
+                    nameEl.className = "review-name";
+                    nameEl.textContent = review.name || "Anónimo";
+
+                    const dateEl = document.createElement("span");
+                    dateEl.className = "review-date";
+                    dateEl.textContent = review.date;
+
+                    header.appendChild(nameEl);
+                    header.appendChild(dateEl);
+
+                    const starsEl = document.createElement("div");
+                    starsEl.className = "review-stars";
+                    const fullStars = "★".repeat(review.rating);
+                    const emptyStars = "☆".repeat(5 - review.rating);
+                    starsEl.textContent = fullStars + emptyStars;
+
+                    const commentEl = document.createElement("p");
+                    commentEl.className = "review-comment";
+                    commentEl.textContent = review.comment;
+
+                    item.appendChild(header);
+                    item.appendChild(starsEl);
+                    item.appendChild(commentEl);
+
+                    reviewsListEl.appendChild(item);
+                });
+            }
+
+            function renderAll() {
+                renderSummary();
+                renderReviews();
+            }
+
+            function validateForm() {
+                const comment = commentInput.value.trim();
+
+                if (comment.length < 10) {
+                    errorEl.textContent = "La reseña debe tener al menos 10 caracteres.";
+                    return false;
+                }
+
+                if (currentRating < 0 || currentRating > 5) {
+                    errorEl.textContent = "La calificación debe estar entre 0 y 5.";
+                    return false;
+                }
+
+                errorEl.textContent = "";
+                return true;
+            }
+
+            function handleFormSubmit(e) {
+                e.preventDefault();
+                if (!validateForm()) return;
+
+                const newReview = {
+                    rating: currentRating,
+                    comment: commentInput.value.trim(),
+                    name: nameInput.value.trim() || "Anónimo",
+                    date: formatDate(new Date()),
+                };
+
+                reviews.push(newReview);
+                saveToLocalStorage();
+                renderAll();
+
+                commentInput.value = "";
+                nameInput.value = "";
+                clearRating();
+            }
+
+            function init() {
+                if (!starEls.length || !form) return;
+
+                loadFromLocalStorage();
+                renderAll();
+                updateStarUI();
+
+                starEls.forEach((star) => {
+                    star.addEventListener("click", handleStarClick);
+                    star.addEventListener("mouseenter", handleStarMouseEnter);
+                    star.addEventListener("mouseleave", handleStarMouseLeave);
+                });
+
+                const starContainer = document.getElementById("star-rating");
+                starContainer.addEventListener("mouseleave", handleStarMouseLeave);
+
+                clearBtn.addEventListener("click", clearRating);
+                form.addEventListener("submit", handleFormSubmit);
+            }
+
+            document.addEventListener("DOMContentLoaded", init);
+        })();
+    </script>
 </body>
 </html>
